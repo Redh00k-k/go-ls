@@ -3,11 +3,22 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/fs"
 	"path/filepath"
+	"time"
 )
 
-func EnumFilePath(filePaths []string, isAll bool) map[string][]string {
-	allFilePath := map[string][]string{}
+type fInfo struct {
+	fileName   string
+	fileMode   fs.FileMode
+	fileSize   int64
+	ownerName  string
+	groupName  string
+	updateTime time.Time
+}
+
+func EnumFilePath(filePaths []string, isAll bool) map[string]map[string]fInfo {
+	allFilePath := map[string]map[string]fInfo{}
 	if len(filePaths) == 0 {
 		// ex. gols
 		files, err := filepath.Glob("./*")
@@ -18,13 +29,12 @@ func EnumFilePath(filePaths []string, isAll bool) map[string][]string {
 		if !isAll {
 			files = RemoveHiddenFile(files)
 		}
-		allFilePath["./"] = files
+
+		inf := GatherFileInfo(files)
+		allFilePath["./"] = inf
 	} else {
 		for _, path := range filePaths {
 			pattern, isSpecifyFile := GeneratePattern(path)
-			if pattern == "" {
-				allFilePath = map[string][]string{}
-			}
 			files, err := filepath.Glob(pattern)
 			if err != nil {
 				panic(err)
@@ -34,7 +44,10 @@ func EnumFilePath(filePaths []string, isAll bool) map[string][]string {
 				// Remove hidden files if no "-a" and no file is specified.
 				files = RemoveHiddenFile(files)
 			}
-			allFilePath[path] = files
+
+			inf := GatherFileInfo(files)
+
+			allFilePath[path] = inf
 		}
 	}
 	return allFilePath
@@ -48,7 +61,6 @@ func main() {
 
 	filePaths := flag.Args()
 	allFilePath := EnumFilePath(filePaths, isAll)
-
 	for path, files := range allFilePath {
 		fmt.Println(path, ":")
 		fmt.Println("Total files: ", len(files))
