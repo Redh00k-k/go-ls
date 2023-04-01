@@ -1,11 +1,12 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io/fs"
 	"path/filepath"
 	"time"
+
+	"github.com/pborman/getopt/v2"
 )
 
 type fInfo struct {
@@ -54,12 +55,16 @@ func EnumFilePath(filePaths []string, isAll bool) map[string]map[string]fInfo {
 }
 
 func main() {
-	var isLongfmt, isAll bool
-	flag.BoolVar(&isLongfmt, "l", false, "list with long format - show permissions")
-	flag.BoolVar(&isAll, "a", false, "list all files including hidden file starting with '.'")
-	flag.Parse()
+	var (
+		isLongfmt bool
+		isAll     bool
+	)
 
-	filePaths := flag.Args()
+	getopt.Flag(&isLongfmt, 'l', "list with long format - show permissions")
+	getopt.Flag(&isAll, 'a', "list all files including hidden file starting with '.'")
+	getopt.Parse()
+	filePaths := getopt.Args()
+
 	allFilePath := EnumFilePath(filePaths, isAll)
 	for path, files := range allFilePath {
 		fmt.Println(path, ":")
