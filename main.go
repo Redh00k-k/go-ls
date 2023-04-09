@@ -12,6 +12,7 @@ import (
 type fInfo struct {
 	fileName   string
 	fileMode   fs.FileMode
+	linkPath   string
 	fileSize   int64
 	ownerName  string
 	groupName  string

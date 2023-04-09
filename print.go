@@ -24,7 +24,11 @@ func printUpdateDate(f fInfo) {
 }
 
 func printFilename(f fInfo) {
-	fmt.Printf("%s  ", f.fileName)
+	if f.linkPath != "" {
+		fmt.Printf("%s  →  %s  ", f.fileName, f.linkPath)
+	} else {
+		fmt.Printf("%s  ", f.fileName)
+	}
 }
 
 func DisplayLongFormat(files map[string]fInfo) {
