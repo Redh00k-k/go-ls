@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"strconv"
+
+	"github.com/fatih/color"
 )
 
 func printMode(f fInfo) {
@@ -24,11 +27,31 @@ func printUpdateDate(f fInfo) {
 }
 
 func printFilename(f fInfo) {
-	if f.linkPath != "" {
-		fmt.Printf("%s  →  %s  ", f.fileName, f.linkPath)
-	} else {
-		fmt.Printf("%s  ", f.fileName)
+	// https://pkg.go.dev/os
+
+	symFlag := false
+	switch m := f.fileMode; {
+	case (m&fs.ModeSymlink) != 0 && f.linkPath != "":
+		// Symbolic Link
+		color.Set(color.FgCyan)
+		symFlag = true
+	case (m & fs.ModeDir) != 0:
+		color.Set(color.BgBlue)
+	case (m & 0111) != 0:
+		// 0111 = --x--x--x
+		color.Set(color.FgGreen)
+	default:
+		color.Set(color.FgWhite)
 	}
+
+	if symFlag {
+		// Symbolic Link
+		fmt.Printf("%s  →  %s", f.fileName, f.linkPath)
+	} else {
+		fmt.Printf("%s", f.fileName)
+	}
+
+	color.Unset()
 }
 
 func DisplayLongFormat(files map[string]fInfo) {
