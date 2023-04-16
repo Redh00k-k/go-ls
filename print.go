@@ -50,8 +50,10 @@ func printFilename(f fInfo) {
 	} else {
 		fmt.Printf("%s", f.fileName)
 	}
-
 	color.Unset()
+
+	// Put a space between file names
+	fmt.Printf("  ")
 }
 
 func DisplayLongFormat(files map[string]fInfo) {
