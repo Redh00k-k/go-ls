@@ -178,6 +178,11 @@ func GetOwnerGroup(filePath string, fileinfo fs.FileInfo) (n string, dn string) 
 		&domainLen,
 		&sidUse,
 	)
+	// If the function fails, it returns zero.
+	if nameLen == 0 {
+		n, dn = "<UNKNOWN>", "<UNKNOWN>"
+		return
+	}
 
 	// Allocate memory for size returned by previous call
 	name := make([]uint16, nameLen)
@@ -212,12 +217,8 @@ func RemoveHiddenFile(files []string) []string {
 			break
 		}
 		attributes, err := syscall.GetFileAttributes(pointer)
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-		if attributes&syscall.FILE_ATTRIBUTE_HIDDEN != 0 {
-			// Hidden files
+		if err != nil || attributes&syscall.FILE_ATTRIBUTE_HIDDEN != 0 {
+			// GetFileAttributes failed or Hidden files
 			continue
 		}
 		tmp = append(tmp, file)
