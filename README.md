@@ -9,7 +9,7 @@ Usage of go-ls:
   -l    list with long format - show permissions
 ```
 
-### Example
+## Example
 Display in a short format.
 ```
 > go-ls.exe ./ ./README.md
@@ -21,6 +21,13 @@ README.md  go.mod  go-ls  go-ls.exe  main.go  print.go  utils_linux.go  utils_wi
 Total files:  1
 README.md
 ```
+* Windows
+![](./img/windows1.png)
+
+* Linux 
+![](./img/linux1.png)
+
+
 
 Display in a long format.
 ```
@@ -29,10 +36,16 @@ Display in a long format.
 Total files:  1
 -rw-rw-rw-   1537  Mar 19 12:34:56 2023  README.md
 ```
+* Windows
+![](./img/windows2.png)
+
+* Linux 
+![](./img/linux2.png)
+
 
 Display in a long format including hidden file.
 ```
-> go-ls.exe -l -a ./
+> go-ls.exe -la ./
 ./ :
 Total files:  10
 -rw-rw-rw-  User Group/DomainName     1362  Mar 19 12:34:56 2023  README.md  
@@ -46,3 +59,8 @@ drwxrwxrwx  User Group/DomainName        0  Mar 19 12:34:56 2023  hidden
 -rw-rw-rw-  User Group/DomainName     1474  Mar 19 12:34:56 2023  utils_linux.go
 -rw-rw-rw-  User Group/DomainName     1623  Mar 19 12:34:56 2023  utils_windows.go
 ```
+* Windows
+![](./img/windows3.png)
+
+* Linux
+![](./img/linux3.png)
