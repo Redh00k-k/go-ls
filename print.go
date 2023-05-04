@@ -56,7 +56,7 @@ func printFilename(f fInfo) {
 	fmt.Printf("  ")
 }
 
-func DisplayLongFormat(files map[string]fInfo) {
+func DisplayLongFormat(files []fInfo) {
 	// Get filesize lengeth for printSize
 	var filesizeLen, ownerLen, gourpLen = 0, 0, 0
 	for _, f := range files {
@@ -76,9 +76,9 @@ func DisplayLongFormat(files map[string]fInfo) {
 		}
 	}
 
-	for path, file := range files {
+	for _, file := range files {
 		printMode(file)
-		printOwnerGroup(path, file, ownerLen, gourpLen)
+		printOwnerGroup(file.filePath, file, ownerLen, gourpLen)
 		printSize(filesizeLen, file)
 		printUpdateDate(file)
 		printFilename(file)
@@ -86,7 +86,7 @@ func DisplayLongFormat(files map[string]fInfo) {
 	}
 }
 
-func DisplayShortFormat(files map[string]fInfo) {
+func DisplayShortFormat(files []fInfo) {
 	for _, file := range files {
 		printFilename(file)
 	}
