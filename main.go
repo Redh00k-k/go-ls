@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/pborman/getopt/v2"
@@ -11,6 +12,7 @@ import (
 
 type fInfo struct {
 	fileName   string
+	filePath   string
 	fileMode   fs.FileMode
 	linkPath   string
 	fileSize   int64
@@ -19,8 +21,8 @@ type fInfo struct {
 	updateTime time.Time
 }
 
-func EnumFilePath(filePaths []string, isAll bool) map[string]map[string]fInfo {
-	allFilePath := map[string]map[string]fInfo{}
+func EnumFilePath(filePaths []string, isAll bool) map[string][]fInfo {
+	allFilePath := map[string][]fInfo{}
 	if len(filePaths) == 0 {
 		// ex. gols
 		files, err := filepath.Glob("./*")
@@ -31,7 +33,7 @@ func EnumFilePath(filePaths []string, isAll bool) map[string]map[string]fInfo {
 		if !isAll {
 			files = RemoveHiddenFile(files)
 		}
-
+		sort.Strings(files)
 		inf := GatherFileInfo(files)
 		allFilePath["./"] = inf
 	} else {
@@ -46,9 +48,8 @@ func EnumFilePath(filePaths []string, isAll bool) map[string]map[string]fInfo {
 				// Remove hidden files if no "-a" and no file is specified.
 				files = RemoveHiddenFile(files)
 			}
-
+			sort.Strings(files)
 			inf := GatherFileInfo(files)
-
 			allFilePath[path] = inf
 		}
 	}

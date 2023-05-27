@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-func GatherFileInfo(files []string) map[string]fInfo {
-	inf := map[string]fInfo{}
+func GatherFileInfo(files []string) []fInfo {
+	inf := []fInfo{}
 	for _, fPath := range files {
 		fileinfo, _ := os.Lstat(fPath)
 
@@ -15,6 +15,7 @@ func GatherFileInfo(files []string) map[string]fInfo {
 
 		var fi fInfo
 		fi.fileName = filename
+		fi.filePath = fPath
 		fi.fileMode = fileinfo.Mode()
 		if fi.fileMode&fs.ModeSymlink != 0 {
 			fi.linkPath, _ = os.Readlink(fPath)
@@ -26,7 +27,8 @@ func GatherFileInfo(files []string) map[string]fInfo {
 		fi.groupName = group
 		fi.updateTime = fileinfo.ModTime()
 
-		inf[fPath] = fi
+		inf = append(inf, fi)
 	}
+
 	return inf
 }
