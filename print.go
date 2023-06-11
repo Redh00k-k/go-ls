@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"io/fs"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
+	"golang.org/x/exp/slices"
 )
 
 func printMode(f fInfo) {
@@ -29,6 +33,11 @@ func printUpdateDate(f fInfo) {
 func printFilename(f fInfo) {
 	// https://pkg.go.dev/os
 
+	// For Windows
+	// https://pkg.go.dev/strings#Split
+	execExt := strings.FieldsFunc(strings.ToLower(os.Getenv("PATHEXT")), func(r rune) bool { return r == ';' })
+	ext := filepath.Ext(f.fileName)
+
 	symFlag := false
 	switch m := f.fileMode; {
 	case (m&fs.ModeSymlink) != 0 && f.linkPath != "":
@@ -37,7 +46,7 @@ func printFilename(f fInfo) {
 		symFlag = true
 	case (m & fs.ModeDir) != 0:
 		color.Set(color.BgBlue)
-	case (m & 0111) != 0:
+	case (m&0111) != 0 || slices.Contains(execExt, ext) != false:
 		// 0111 = --x--x--x
 		color.Set(color.FgGreen)
 	default:
