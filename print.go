@@ -12,25 +12,25 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func printMode(f fInfo) {
+func (f *fInfo) printMode() {
 	// c:char device  d:directory  t:sticky  D:device file  L:symlink
 	// exp. Dcrw-------
 	fmt.Printf("%-11s  ", f.fileMode)
 }
 
-func printOwnerGroup(filePath string, f fInfo, ownerLen int, groupLen int) {
+func (f *fInfo) printOwnerGroup(filePath string, ownerLen int, groupLen int) {
 	fmt.Printf("%-*s %-*s  ", ownerLen, f.ownerName, groupLen, f.groupName)
 }
 
-func printSize(sizeLen int, f fInfo) {
+func (f *fInfo) printSize(sizeLen int) {
 	fmt.Printf("%*d  ", sizeLen, f.fileSize)
 }
 
-func printUpdateDate(f fInfo) {
+func (f *fInfo) printUpdateDate() {
 	fmt.Printf("%s  ", f.updateTime.Format("Jan _2 15:04:05 2006"))
 }
 
-func printFilename(f fInfo) {
+func (f *fInfo) printFilename() {
 	// https://pkg.go.dev/os
 
 	// For Windows
@@ -86,18 +86,18 @@ func DisplayLongFormat(files []fInfo) {
 	}
 
 	for _, file := range files {
-		printMode(file)
-		printOwnerGroup(file.filePath, file, ownerLen, gourpLen)
-		printSize(filesizeLen, file)
-		printUpdateDate(file)
-		printFilename(file)
+		file.printMode()
+		file.printOwnerGroup(file.filePath, ownerLen, gourpLen)
+		file.printSize(filesizeLen)
+		file.printUpdateDate()
+		file.printFilename()
 		fmt.Println()
 	}
 }
 
 func DisplayShortFormat(files []fInfo) {
 	for _, file := range files {
-		printFilename(file)
+		file.printFilename()
 	}
 	fmt.Println()
 }
